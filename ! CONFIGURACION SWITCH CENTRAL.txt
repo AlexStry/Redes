@@ -1,0 +1,114 @@
+! CONFIGURACION SWITCH CENTRAL
+! SWITCH CENTRAL ----------
+
+enable
+clock set 13:00:00 Mar 11 2025
+config t
+
+no ip domain-lookup
+
+hostname S-Central
+
+banner motd #
+|====== UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED ======|
+|==============================================================|
+|                                                              |
+|Please contact the system administrator for any concerns.     |
+|==============================================================|
+
+#
+username CIT privilege 15 secret tc2006b
+username CEO privilege 15 secret tc2006b
+
+ip domain-name FundacionSoffy.com.mx
+
+crypto key generate rsa 
+yes 
+1024
+
+line con 0
+login local 
+logging sync
+
+line vty 0 1
+login local 
+transport input ssh
+logging sync
+
+vtp domain FundacionSoffy.com.mx
+vtp mode server 
+vtp password tc2006b
+
+vlan 911
+ name Gestion
+
+vlan 10
+ name Consultorios
+
+
+vlan 20
+ name Visitantes
+
+
+vlan 30
+ name AULA1-2
+
+
+vlan 40
+ name STAFF
+
+
+vlan 50
+ name Admin
+
+
+vlan 777
+ name Seguridad
+
+
+vlan 60
+ name Direccion
+
+
+vlan 70
+ name Aula3
+
+
+vlan 80
+ name Servers
+
+
+interface g1/0/1
+  description ISP
+  switchport mode trunk
+  no shutdown
+
+interface g1/0/2
+  description Switch4
+  switchport mode trunk
+  no shutdown
+
+interface g1/0/3
+  description Switch3
+  switchport mode trunk
+  no shutdown
+
+interface g1/0/4
+  description Switch2
+  switchport mode trunk
+  no shutdown
+
+interface g1/0/5
+  description Servers
+  switchport mode trunk
+  no shutdown
+
+interface vlan 911
+  description GestionRemota
+  ip address 172.18.129.81 255.255.255.240
+  no shutdown
+
+
+ip default-gateway 172.18.129.94
+
+! FIN ---------------------------

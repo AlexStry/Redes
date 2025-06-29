@@ -1,0 +1,156 @@
+! CONFIGURACION ROUTER SOFFY
+
+! Configuración SOFFY
+
+! Router
+
+enable
+clock set 13:00:00 Mar 11 2025
+config t
+
+no ip domain-lookup
+
+hostname RF-Clase07
+
+banner motd #
+|====== UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED ======|
+|==============================================================|
+|                                                              |
+|Please contact the system administrator for any concerns.     |
+|==============================================================|
+
+#
+username CIT privilege 15 secret tc2006b
+username CEO privilege 15 secret tc2006b
+
+ip domain-name FundacionSoffy.com.mx
+
+crypto key generate rsa 
+yes 
+1024
+
+line con 0
+login local 
+logging sync
+
+line vty 0 1
+login local 
+transport input ssh
+logging sync
+
+int g0/0/0
+desc Conexion con el ISP Primario
+ip add 192.168.20.254 255.255.255.252
+no shut
+
+int s0/2/0
+desc Conexion ISP Secundario
+ip add 172.16.255.250 255.255.255.252
+no shut 
+
+interface  G0/0/1.911
+  description VLAN-Gestion
+  encapsulation dot1q 911
+  ip address 172.18.129.94 255.255.255.240
+
+interface  G0/0/1.10
+  description VLAN-Consultorios
+  encapsulation dot1q 10
+  ip address 172.18.129.62 255.255.255.224
+
+interface  G0/0/1.20
+  description VLAN-VISITAS
+  encapsulation dot1q 20
+  ip address 172.18.128.254 255.255.255.128
+
+interface  G0/0/1.30
+  description VLAN-AULAS12
+  encapsulation dot1q 30
+  ip address 172.18.129.30 255.255.255.224
+
+interface  G0/0/1.40
+  description VLAN-STAFF
+  encapsulation dot1q 40
+  ip address 172.18.128.126 255.255.255.128
+
+interface  G0/0/1.50
+  description VLAN-ADMIN
+  encapsulation dot1q 50
+  ip address 172.18.129.100 255.255.255.240
+
+interface  G0/0/1.777
+  description VLAN-Seguridad
+  encapsulation dot1q 777
+  ip address 172.18.129.78 255.255.255.240
+
+interface  G0/0/1.60
+  description VLAN-Direccion
+  encapsulation dot1q 60
+  ip address 172.18.129.134 255.255.255.248
+
+interface  G0/0/1.70
+  description VLAN-Aula3
+  encapsulation dot1q 70
+  ip address 172.18.129.126 255.255.255.240
+
+interface  G0/0/1.80
+  description VLAN-Servers
+  encapsulation dot1q 80
+  ip address 172.18.129.142 255.255.255.248
+
+int g0/0/1
+no shut 
+
+ip dhcp excluded-address 172.18.129.78
+ip dhcp excluded-address 172.18.129.126
+ip dhcp excluded-address 172.18.129.134
+ip dhcp excluded-address 172.18.129.100
+ip dhcp excluded-address 172.18.128.126
+ip dhcp excluded-address 172.18.129.30
+ip dhcp excluded-address 172.18.128.254
+ip dhcp excluded-address 172.18.129.62
+
+ip dhcp pool POOL-Consultorios
+  network 172.18.129.32 255.255.255.224
+  default-router 172.18.129.62
+  dns-server 8.8.8.8
+
+ip dhcp pool POOL-VISITAS
+  network 172.18.128.128 255.255.255.128
+  default-router 172.18.128.254
+   dns-server 8.8.8.8
+
+ip dhcp pool POOL-AULA1-2
+  network 172.18.129.0 255.255.255.224
+  default-router 172.18.129.30
+  dns-server 8.8.8.8
+
+ip dhcp pool POOL-STAFF
+  network 172.18.128.0 255.255.255.128
+  default-router 172.18.128.126
+  dns-server 8.8.8.8
+
+ip dhcp pool POOL-ADMIN
+  network 172.18.129.96 255.255.255.240
+  default-router 172.18.129.100
+  dns-server 8.8.8.8
+
+ip dhcp pool POOL-Seguridad
+  network 172.18.129.64 255.255.255.240
+  default-router 172.18.129.78
+  dns-server 8.8.8.8
+
+ip dhcp pool POOL-Direccion
+  network 172.18.129.128 255.255.255.248
+  default-router 172.18.129.134
+  dns-server 8.8.8.8
+
+ip dhcp pool POOL-AULA3
+  network 172.18.129.112 255.255.255.240
+  default-router 172.18.129.126
+  dns-server 8.8.8.8
+
+ip route 0.0.0.0 0.0.0.0 g0/0/0
+
+ip route 0.0.0.0 0.0.0.0 s0/2/0 5
+! --------------- FIN ----------------------
